@@ -151,25 +151,28 @@ spec:
     - name: SCRIPT 
       value: |
         #/bin/bash
-        if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
-          SUBNET_IDS=$(cat $(workspaces.shared.path)/subnet_ids)
-          rosa create cluster --cluster-name $(params.rosa-cluster-name) --sts \
-            --operator-roles-prefix $(params.operator-role-prefix) \
-            --oidc-config-id $OIDC_CONFIG_ID \
-            --region $(params.rosa-region) \
-            --version $(params.rosa-version) \
-            --replicas 3 \
-            --compute-machine-type $(params.rosa-machine-type) \
-            --machine-cidr 10.0.0.0/16 \
-            --service-cidr 172.30.0.0/16 \
-            --pod-cidr 10.128.0.0/14 \
-            --host-prefix 23 \
-            --subnet-ids $SUBNET_IDS \
-            --hosted-cp \
-            --dry-run
-        else
-          echo "ROSA Cluster \"$(params.rosa-cluster-name)\" already exists."
-        fi 
+        #if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
+        SUBNET_IDS=$(cat $(workspaces.shared.path)/subnet_ids)
+        cat $(workspaces.shared.path)/subnet_ids
+        cd $(workspaces.shared.path)
+        pwd
+          #rosa create cluster --cluster-name $(params.rosa-cluster-name) --sts \
+          #  --operator-roles-prefix $(params.operator-role-prefix) \
+          #  --oidc-config-id $OIDC_CONFIG_ID \
+          #  --region $(params.rosa-region) \
+          #  --version $(params.rosa-version) \
+          #  --replicas 3 \
+          #  --compute-machine-type $(params.rosa-machine-type) \
+          #  --machine-cidr 10.0.0.0/16 \
+          #  --service-cidr 172.30.0.0/16 \
+          #  --pod-cidr 10.128.0.0/14 \
+          #  --host-prefix 23 \
+          #  --subnet-ids $SUBNET_IDS \
+          #  --hosted-cp \
+          #  --dry-run
+        #else
+        #  echo "ROSA Cluster \"$(params.rosa-cluster-name)\" already exists."
+        #fi 
     workspaces:
     - name: aws-creds
       workspace: aws-credentials-secret

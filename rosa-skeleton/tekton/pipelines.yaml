@@ -76,6 +76,8 @@ spec:
     workspaces:
     - name: source
       workspace: manifest-workspace
+    - name: shared
+      workspace: shared-workspace
     params:
      - name: terraform-secret
        value: "aws-credentials"
@@ -92,30 +94,30 @@ spec:
     runAfter:
     - git-clone
 
-  - name: get-vpc-outputs
-    taskRef:
-      name: terraform-cli
-    workspaces:
-    - name: source
-      workspace: manifest-workspace
-    - name: shared
-      workspace: shared-workspace
-    params:
-     - name: terraform-secret
-       value: "aws-credentials"
-     - name: INIT_ARGS
-       value:
-       - "terraform init -backend-config=develop.tfbackend"
-#       - init
-#       - "-backend-config=develop.tfbackend"
-     - name: ARGS
-       value:
-       - "terraform output subnet_ids > $(workspaces.shared.path)/subnet_ids"
-#       - output
-#       - "subnet_ids"
-#       - "> $(workspaces.shared.path)/subnet_ids"
-    runAfter:
-    - create-vpc
+#  - name: get-vpc-outputs
+#    taskRef:
+#      name: terraform-cli
+#    workspaces:
+#    - name: source
+#      workspace: manifest-workspace
+#    - name: shared
+#      workspace: shared-workspace
+#    params:
+#     - name: terraform-secret
+#       value: "aws-credentials"
+#     - name: INIT_ARGS
+#       value:
+#       - "terraform init -backend-config=develop.tfbackend"
+##       - init
+##       - "-backend-config=develop.tfbackend"
+#     - name: ARGS
+#       value:
+#       - "terraform output subnet_ids > $(workspaces.shared.path)/subnet_ids"
+##       - output
+##       - "subnet_ids"
+##       - "> $(workspaces.shared.path)/subnet_ids"
+#    runAfter:
+#    - create-vpc
 
   - name: rosa-init
     taskRef:
@@ -138,7 +140,7 @@ spec:
     - name: shared
       workspace: shared-workspace
     runAfter:
-    - get-vpc-outputs
+    - git-clone
 
   - name: create-cluster
     taskRef:
@@ -177,6 +179,7 @@ spec:
       workspace: shared-workspace
     runAfter:
     - rosa-init
+    - create-vpc
 #
 #  - name: check-cluster
 #    taskRef:

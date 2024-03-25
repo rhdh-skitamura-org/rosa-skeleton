@@ -1,27 +1,27 @@
 locals {
-  project    = "${{ values.cluster_name }}"
-  aws_region = "${{ values.aws_region }}"
+  cluster_name = "rosa-test"
+  aws_region   = "ap-northeast-1"
 
   vpc = {
-    name = "${{ values.cluster_name }}-vpc"
-    cidr = "${{ values.vpc_cidr }}"
+    name = "${local.cluster_name}-vpc"
+    cidr = "10.0.0.0/16"
 
     public_subnets = [
-      "${{ values.public_subnet_1 }}",
-      "${{ values.public_subnet_2 }}",
-      "${{ values.public_subnet_3 }}",
+      "10.0.1.0/24",
+      "10.0.2.0/24",
+      "10.0.3.0/24",
     ]
 
     private_subnets = [
-      "${{ values.private_subnet_1 }}",
-      "${{ values.private_subnet_2 }}",
-      "${{ values.private_subnet_3 }}",
+      "10.0.4.0/24",
+      "10.0.5.0/24",
+      "10.0.6.0/24",
     ]
 
     tags = {
       Terraform    = "true"
       service      = "ROSA"
-      cluster_name = "${{ values.cluster_name }}"
+      cluster_name = local.cluster_name
     }
   }
 }

@@ -18,9 +18,9 @@ spec:
 #  - name: ARGS
 #    value: '--multi-az --version "4.11.23"'
   - name: git-url
-    value: 'https://github.com/rhdh-skitaura-org/rosa-skeleton'
+    value: 'https://github.com/rhdh-skitamura-org/rosa-skeleton'
   - name: git-revision
-    value: 'master'
+    value: 'main'
 #  - name: default-route-host
 #    value: '${DEFAULT_ROUTE_HOST}'
 #  - name: app-namespace
@@ -60,5 +60,8 @@ spec:
   - name: manifest-workspace
     persistentVolumeClaim:
       claimName: manifest-workspace
+  - name: basic-auth
+    secret:
+      secretName: github-basic-auth
 
   serviceAccountName: tekton-sa

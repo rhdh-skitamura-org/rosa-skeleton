@@ -9,6 +9,7 @@ spec:
 #  - name: shared-workspace
 #  - name: kubeconfig-workspace
   - name: manifest-workspace
+  - name: basic-auth
 
   params:  
 #  - name: rosa-token
@@ -56,22 +57,27 @@ spec:
     workspaces:
     - name: output 
       workspace: manifest-workspace
+    - name: basic-auth
+      workspace: basic-auth
 
-# - name: create-vpc
-#    taskRef:
-#      name: terraform-cli
-#    workspaces:
-#    - name: source
-#      workspace: manifest-workspace
-#    params:
-#     - name: terraform-secret
-#       value: "aws-credentials"
-#     - name: source-dir
-#       value: $(workspaces.source.path)
-#     - name: ARGS
-#       value:
-#       - apply
-#       - "-auto-approve"
+  - name: create-vpc
+    taskRef:
+      name: terraform-cli
+    workspaces:
+    - name: source
+      workspace: manifest-workspace
+    params:
+     - name: terraform-secret
+       value: "aws-credentials"
+     - name: source-dir
+       value: $(workspaces.source.path)/rosa-skeleton # ここは後で変える必要あり
+     - name: ARGS
+       value:
+       - apply
+       - "-auto-approve"
+    runAfter:
+    - git-clone
+
 
 #  - name: rosa-init
 #    taskRef:

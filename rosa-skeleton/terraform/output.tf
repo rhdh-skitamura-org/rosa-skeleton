@@ -13,7 +13,3 @@ output "azs" {
 output "aws_region" {
   value = local.aws_region
 }
-
-output "cluster_endpoint" {
-  value = module.eks.cluster_endpoint
-}

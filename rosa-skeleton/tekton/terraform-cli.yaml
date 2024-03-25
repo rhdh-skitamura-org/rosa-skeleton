@@ -67,6 +67,9 @@ spec:
           value: $(params.httpProxy)
       args:
         - "$(params.INIT_ARGS)"
+      envFrom:
+        - secretRef:
+            name: $(params.terraform-secret)
     - name: terraform-cli
       image: $(params.image)
       #workingDir: $(workspaces.source.path)/terraform 

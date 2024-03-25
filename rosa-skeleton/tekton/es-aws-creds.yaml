@@ -1,0 +1,23 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: es-aws-creds
+spec:
+  secretStoreRef:
+    name: awssm
+    kind: ClusterSecretStore
+  target: # ExternalSecret から作成されるKubernetes Secretを指定する
+    name: aws-credentials
+  data: # 取得する秘匿情報を指定する
+  - secretKey: AWS_ACCESS_KEY_ID # 作成するSecretのkeyを指定
+    remoteRef:
+      key: aws_credentials # AWS Secrets Managerに登録したシークレット名
+      property: AWS_ACCESS_KEY_ID # シークレットに登録したキーを指定
+  - secretKey: AWS_SECRET_ACCESS_KEY
+    remoteRef:
+      key: aws_credentials
+      property: AWS_SECRET_ACCESS_KEY
+  - secretKey: AWS_DEFAULT_REGION
+    remoteRef:
+      key: aws_credentials
+      property: AWS_DEFAULT_REGION

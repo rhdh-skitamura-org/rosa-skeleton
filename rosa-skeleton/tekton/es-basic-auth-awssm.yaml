@@ -1,0 +1,19 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: es-github-basic-auth
+spec:
+  secretStoreRef:
+    name: awssm
+    kind: ClusterSecretStore
+  target: # ExternalSecret から作成されるKubernetes Secretを指定する
+    name: github-basic-auth
+  data: # 取得する秘匿情報を指定する
+  - secretKey: .git-credentials # 作成するSecretのkeyを指定
+    remoteRef:
+      key: github_basic_auth # AWS Secrets Managerに登録したシークレット名
+      property: github-basic-auth # シークレットに登録したキーを指定
+  - secretKey: .gitconfig
+    remoteRef:
+      key: github_gitconfig
+      property: .gitconfig

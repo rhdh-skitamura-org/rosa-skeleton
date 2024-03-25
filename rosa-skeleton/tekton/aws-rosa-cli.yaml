@@ -13,6 +13,13 @@ spec:
     env:
     - name: ROSA_CLUSTER_NAME
       value: $(params.rosa-cluster-name)
+    envFrom:
+      - secretRef:
+          name: rosa-token
+      - secretRef:
+          name: oidc-config-id
+      - secretRef:
+          name: aws-credentials
   params:
   - name: rosa-cluster-name
     description: The ROSA cluster name

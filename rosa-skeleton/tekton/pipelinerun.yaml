@@ -7,20 +7,20 @@ spec:
     name: rosa-create-pipeline 
 
   params:
-#  - name: rosa-token
-#    value: '${ROSA_TOKEN}'
-#  - name: rosa-cluster-name
-#    value: 'democluster-001'
-#  - name: rosa-region
-#    value: 'us-east-1'
-#  - name: rosa-cidr
-#    value: '10.0.0.0/16'
-#  - name: ARGS
-#    value: '--multi-az --version "4.11.23"'
   - name: git-url
     value: 'https://github.com/rhdh-skitamura-org/rosa-skeleton'
   - name: git-revision
     value: 'main'
+  - name: rosa-cluster-name
+    value: 'rosa-test-001'
+  - name: rosa-region
+    value: 'ap-northeast-1'
+  - name: operator-role-prefix
+    value: 'rosa-test'
+#  - name: rosa-cidr
+#    value: '10.0.0.0/16'
+#  - name: ARGS
+#    value: '--multi-az --version "4.11.23"'
 #  - name: default-route-host
 #    value: '${DEFAULT_ROUTE_HOST}'
 #  - name: app-namespace
@@ -45,12 +45,12 @@ spec:
       fsGroup: 65532
 
   workspaces:
-#  - name: aws-credentials-secret
-#    secret:
-#      secretName: aws-credentials 
-#  - name: rosa-config-workspace
-#    persistentVolumeClaim:
-#      claimName: rosa-config-workspace
+  - name: aws-credentials-secret
+    secret:
+      secretName: aws-credentials 
+  - name: rosa-config-workspace
+    persistentVolumeClaim:
+      claimName: rosa-config-workspace
 #  - name: shared-workspace
 #    persistentVolumeClaim:
 #      claimName: shared-workspace

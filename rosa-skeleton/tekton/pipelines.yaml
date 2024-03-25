@@ -4,8 +4,8 @@ metadata:
   name: rosa-create-pipeline 
 spec:
   workspaces:
-#  - name: aws-credentials-secret
-#  - name: rosa-config-workspace
+  - name: aws-credentials-secret
+  - name: rosa-config-workspace
 #  - name: shared-workspace
 #  - name: kubeconfig-workspace
   - name: manifest-workspace
@@ -14,9 +14,13 @@ spec:
   params:  
 #  - name: rosa-token
 #    type: string
-#  - name: rosa-cluster-name
-#    type: string
-#  - name: rosa-region
+  - name: rosa-cluster-name
+    type: string
+  - name: rosa-region
+    type: string
+  - name: operator-role-prefix
+    type: string
+#  - name: oidc-config-id
 #    type: string
 #  - name: rosa-cidr
 #    type: string
@@ -84,37 +88,62 @@ spec:
     runAfter:
     - git-clone
 
+  - name: get-vpc-outputs
+    taskRef:
+      name: terraform-cli
+    workspaces:
+    - name: source
+      workspace: manifest-workspace
+    params:
+     - name: terraform-secret
+       value: "aws-credentials"
+     - name: source-dir
+       value: $(workspaces.source.path)/rosa-skeleton # ここは後で変える必要あり
+     - name: INIT_ARGS
+       value:
+       - init
+       - "-backend-config=develop.tfbackend"
+     - name: ARGS
+       value:
+       - output
+       - "-raw subnet_ids > $(workspaces.source.path)/"
+    runAfter:
+    - git-clone
 
-#  - name: rosa-init
-#    taskRef:
-#      name: aws-rosa-cli
-#    params:
-#    - name: SCRIPT
-#      value: |
-#        printenv
-#        echo $(params.rosa-token)
-#        echo $AWS_ACCESS_KEY_ID
-#        rosa login --token $(params.rosa-token)
-#        rosa init --region $(params.rosa-region)
-#        rosa create account-roles --prefix ManagedOpenShift --mode auto --yes
-#        rosa create operator-roles --prefix $(params.operator-role-prefix) --oidc-config-id $(params.oidc-config-id) --hosted-cp
-#    workspaces:
-#    - name: aws-creds
-#      workspace: aws-credentials-secret
-#    - name: rosa-config
-#      workspace: rosa-config-workspace
-#
+  - name: rosa-init
+    taskRef:
+      name: aws-rosa-cli
+    params:
+    - name: rosa-cluster-name
+      value: $(params.rosa-cluster-name)
+    - name: SCRIPT
+      value: |
+        rosa login --token $ROSA_TOKEN
+        rosa init --region $(params.rosa-region)
+        rosa create account-roles --force-policy-creation --mode auto --hosted-cp 
+        INSTALLER_ROLE_ARN=$(rosa list account-roles | grep HCP-ROSA-Installer | awk '{print $3}')
+        rosa create operator-roles --prefix $(params.operator-role-prefix) --oidc-config-id $OIDC_CONFIG_ID --installer-role-arn $INSTALLER_ROLE_ARN --mode auto --hosted-cp
+    workspaces:
+    - name: aws-creds
+      workspace: aws-credentials-secret
+    - name: rosa-config
+      workspace: rosa-config-workspace
+    runAfter:
+    - git-clone
+
 #  - name: create-cluster
 #    taskRef:
 #      name: aws-rosa-cli
 #    params: 
+#    - name: rosa-cluster-name
+#      value: $(params.rosa-cluster-name)
 #    - name: SCRIPT 
 #      value: |
 #        #/bin/bash
 #        if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
 #          rosa create cluster --cluster-name $(params.rosa-cluster-name)  --sts \
 #            --operator-roles-prefix $(params.operator-role-prefix) \
-#            --oidc-config-id $(params.oidc-config-id) \
+#            --oidc-config-id $OIDC_CONFIG_ID \
 #            --region $(params.aws-region) \
 #            --version $(params.rosa-version) \
 #            --replicas 3 \

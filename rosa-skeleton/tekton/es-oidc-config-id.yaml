@@ -1,0 +1,15 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: es-oidc-config-id
+spec:
+  secretStoreRef:
+    name: awssm
+    kind: ClusterSecretStore
+  target: # ExternalSecret から作成されるKubernetes Secretを指定する
+    name: oidc-config-id
+  data: # 取得する秘匿情報を指定する
+  - secretKey: OIDC_CONFIG_ID # 作成するSecretのkeyを指定
+    remoteRef:
+      key: oidc_config_id # AWS Secrets Managerに登録したシークレット名
+      property: OIDC_CONFIG_ID # シークレットに登録したキーを指定

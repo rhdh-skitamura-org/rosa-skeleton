@@ -24,3 +24,8 @@ module "vpc" {
 
   tags = local.vpc.tags
 }
+
+resource "local_file" "subnet_ids" {
+  content  = join(",", concat(module.vpc.public_subnets, module.vpc.private_subnets))
+  filename = "../shared/subnet_ids"
+}

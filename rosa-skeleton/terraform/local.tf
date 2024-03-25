@@ -24,4 +24,7 @@ locals {
       cluster_name = local.cluster_name
     }
   }
+
+  subnet_ids_temp = concat([for item in concat(module.vpc.public_subnets, module.vpc.private_subnets) : format("\"%s\"", item)])
+  subnet_ids      = join(",", local.subnet_ids_temp)
 }

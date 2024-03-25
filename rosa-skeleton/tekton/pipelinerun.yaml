@@ -17,6 +17,10 @@ spec:
     value: 'ap-northeast-1'
   - name: operator-role-prefix
     value: 'rosa-test'
+  - name: rosa-version
+    value: '4.14.16'
+  - name: rosa-machine-type
+    value: 'm5.xlarge'
 #  - name: rosa-cidr
 #    value: '10.0.0.0/16'
 #  - name: ARGS
@@ -51,9 +55,9 @@ spec:
   - name: rosa-config-workspace
     persistentVolumeClaim:
       claimName: rosa-config-workspace
-#  - name: shared-workspace
-#    persistentVolumeClaim:
-#      claimName: shared-workspace
+  - name: shared-workspace
+    persistentVolumeClaim:
+      claimName: shared-workspace
 #  - name: kubeconfig-workspace
 #    persistentVolumeClaim:
 #      claimName: kubeconfig-workspace

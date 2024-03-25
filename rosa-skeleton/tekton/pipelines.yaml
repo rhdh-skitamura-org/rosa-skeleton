@@ -20,6 +20,8 @@ spec:
 #    type: string
 #  - name: rosa-cidr
 #    type: string
+#  - name: INIT_ARGS
+#    type: string
 #  - name: ARGS
 #    type: string
   - name: git-url
@@ -71,6 +73,10 @@ spec:
        value: "aws-credentials"
      - name: source-dir
        value: $(workspaces.source.path)/rosa-skeleton # ここは後で変える必要あり
+     - name: INIT_ARGS
+       value:
+       - init
+       - "-backend-config=develop.tfbackend"
      - name: ARGS
        value:
        - apply

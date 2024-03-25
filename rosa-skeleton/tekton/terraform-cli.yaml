@@ -20,8 +20,13 @@ spec:
     This Task will do a terraform init before it executes the actual configured ARGS from parameter.
   workspaces:
   - name: source
-  - name: remote-state
+#  - name: remote-state
   params:
+  - name: INIT_ARGS
+    description: The terraform init cli commands to tun
+    type: array
+    default:
+    - "--help"
   - name: ARGS
     description: The terraform cli commands to tun
     type: array
@@ -50,7 +55,8 @@ spec:
   steps:
     - name: init
       image: $(params.image)
-      workingDir: $(workspaces.source.path)/terraform
+      #workingDir: $(workspaces.source.path)/terraform
+      workingDir: $(workspaces.source.path)/rosa-skeleton/terraform
       command: ["terraform"]
       env:
         - name: "HTTP_PROXY"
@@ -60,10 +66,11 @@ spec:
         - name: "HTTP_PROXY"
           value: $(params.httpProxy)
       args:
-        - "init"
+        - "$(params.INIT_ARGS)"
     - name: terraform-cli
       image: $(params.image)
-      workingDir: $(workspaces.source.path)/terraform 
+      #workingDir: $(workspaces.source.path)/terraform 
+      workingDir: $(workspaces.source.path)/rosa-skeleton/terraform 
       command: ["terraform"]
       args:
         - "$(params.ARGS)"

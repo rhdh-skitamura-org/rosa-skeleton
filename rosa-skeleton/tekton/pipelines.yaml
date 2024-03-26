@@ -7,7 +7,7 @@ spec:
   - name: aws-credentials-secret
   - name: rosa-config-workspace
   - name: shared-workspace
-#  - name: kubeconfig-workspace
+  - name: kubeconfig-workspace
   - name: manifest-workspace
   - name: basic-auth
 
@@ -157,7 +157,7 @@ spec:
     - name: SCRIPT 
       value: |
         #/bin/bash
-        #if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
+        if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
         SUBNET_IDS=$(cat $(workspaces.shared.path)/subnet_ids)
         rosa create cluster --cluster-name $(params.rosa-cluster-name) --sts \
           --operator-roles-prefix $(params.operator-role-prefix) \
@@ -175,9 +175,9 @@ spec:
           --enable-autoscaling $(params.enable-autoscaling) \
           --hosted-cp
           #--dry-run
-        #else
-        #  echo "ROSA Cluster \"$(params.rosa-cluster-name)\" already exists."
-        #fi 
+        else
+          echo "ROSA Cluster \"$(params.rosa-cluster-name)\" already exists."
+        fi 
     workspaces:
     - name: aws-creds
       workspace: aws-credentials-secret
@@ -188,128 +188,95 @@ spec:
     runAfter:
     - rosa-init
     - create-vpc
-#
-#  - name: check-cluster
-#    taskRef:
-#      name: aws-rosa-cli
-#    timeout: "1h30m"
-#    params: 
-#    - name: SCRIPT
-#      value: |
-#        #/bin/bash
-#        while [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) | grep "ready") ]] ;
-#        do
-#          echo "ROSA Cluster \"$(params.rosa-cluster-name)\" is not ready."
-#          echo "wait 10 seconds and retry..."
-#          sleep 10
-#        done
-#        echo "ROSA Cluster \"$(params.rosa-cluster-name)\" is ready."
-#    workspaces:
-#    - name: aws-creds
-#      workspace: aws-credentials-secret
-#    - name: rosa-config
-#      workspace: rosa-config-workspace
-#    runAfter:
-#    - create-cluster
-#
-#  - name: prepare-vpc-peering
-#    taskRef:
-#      name: aws-rosa-cli
-#    params:
-#    - name: SCRIPT
-#      value: |
-#       export REMOTE_STATE_DIR="/workspace/remote-state"
-#       export DB_VPC_ID=$(params.db-vpc-id)
-#       export DB_VPC_CIDR=$(params.db-vpc-cidr)
-#       export DB_REGION=$(params.db-region)
-#       export ROSA_REGION=$(params.rosa-region)
-#       export ROSA_VPC_ID=$(aws ec2 describe-vpcs --region $(params.rosa-region) --query 'Vpcs[0].VpcId' --filter "Name=cidr-block-association.cidr-block,Values=$(params.rosa-cidr)" --output text)
-#       export ROSA_VPC_CIDR=$(params.rosa-cidr)
-#       envsubst < $(workspaces.manifest.path)/cluster-manifest/terraform/vpc-peering.tpl > $(workspaces.manifest.path)/cluster-manifest/terraform/vpc-peering.tf
-#    workspaces:
-#    - name: aws-creds
-#      workspace: aws-credentials-secret
-#    - name: rosa-config
-#      workspace: rosa-config-workspace
-#    - name: manifest
-#      workspace: manifest-workspace
-#    runAfter:
-#    - check-cluster
-#
-#  - name: create-vpc-peering
-#    taskRef:
-#      name: terraform-cli
-#    workspaces:
-#    - name: source
-#      workspace: manifest-workspace
-#    - name: remote-state
-#      workspace: shared-workspace
-#    params:
-#     - name: terraform-secret
-#       value: "terraform-secret"
-#     - name: source-dir
-#       value: $(workspaces.source.path)/cluster-manifest
-#     - name: ARGS
-#       value:
-#       - apply
-#       - "-auto-approve"
-#    runAfter:
-#    - prepare-vpc-peering
-# 
-#  - name: create-cluster-admin
-#    taskRef:
-#      name: aws-rosa-cli 
-#    params: 
-#    - name: SCRIPT
-#      value: |
-#        #/bin/bash
-#        set +e
-#        rosa create admin --cluster=$(params.rosa-cluster-name) > $(workspaces.shared.path)/stdout.txt
-#        if [[ $(cat $(workspaces.shared.path)/stdout.txt | grep "oc login") ]] ; then
-#          cat $(workspaces.shared.path)/stdout.txt | grep "oc login" > $(workspaces.shared.path)/command.txt
-#        fi
-#        cat $(workspaces.shared.path)/command.txt
-#        while true ;
-#        do
-#          $(cat $(workspaces.shared.path)/command.txt) --insecure-skip-tls-verify
-#          ret=$?
-#          if [ $ret -eq 0 ] ; then
-#            break
-#          else
-#            echo "\"$(params.rosa-cluster-name)\" Cluster-admin user is not ready."
-#            echo "wait 10 seconds and retry..."
-#            sleep 10
-#          fi
-#        done 
-#    workspaces:
-#    - name: aws-creds
-#      workspace: aws-credentials-secret
-#    - name: rosa-config
-#      workspace: rosa-config-workspace
-#    - name: shared
-#      workspace: shared-workspace
-#    - name: kubeconfig
-#      workspace: kubeconfig-workspace
-#    runAfter:
-#    - check-cluster
-#
-#  - name: decrypt-secret
-#    taskRef:
-#      name: aws-rosa-cli 
-#    params:
-#    - name: SCRIPT
-#      value: |
-#        aws kms decrypt --ciphertext-blob fileb://$(workspaces.manifest.path)/cluster-manifest/k8s/app/secrets/encrypted-pull-secret.txt --output text --region ap-northeast-1 --query Plaintext | base64 --decode > $(workspaces.manifest.path)/cluster-manifest/k8s/app/secrets/pull-secret.txt 
-#    workspaces:
-#    - name: aws-creds
-#      workspace: aws-credentials-secret
-#    - name: rosa-config
-#      workspace: rosa-config-workspace
-#    - name: manifest
-#      workspace: manifest-workspace
-#    runAfter:
-#    - git-clone
-#
+
+  - name: check-cluster
+    taskRef:
+      name: aws-rosa-cli
+    timeout: "1h30m"
+    params: 
+    - name: SCRIPT
+      value: |
+        #/bin/bash
+        while [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) | grep "ready") ]] ;
+        do
+          echo "ROSA Cluster \"$(params.rosa-cluster-name)\" is not ready."
+          echo "wait 10 seconds and retry..."
+          sleep 10
+        done
+        echo "ROSA Cluster \"$(params.rosa-cluster-name)\" is ready."
+    workspaces:
+    - name: aws-creds
+      workspace: aws-credentials-secret
+    - name: rosa-config
+      workspace: rosa-config-workspace
+    runAfter:
+    - create-cluster
+ 
+  - name: create-cluster-admin
+    taskRef:
+      name: aws-rosa-cli 
+    params: 
+    - name: SCRIPT
+      value: |
+        #/bin/bash
+        set +e
+        rosa create admin --cluster=$(params.rosa-cluster-name) > $(workspaces.shared.path)/stdout.txt
+        if [[ $(cat $(workspaces.shared.path)/stdout.txt | grep "oc login") ]] ; then
+          cat $(workspaces.shared.path)/stdout.txt | grep "oc login" > $(workspaces.shared.path)/command.txt
+        fi
+        cat $(workspaces.shared.path)/command.txt
+        rosa describe cluster --cluster=$(params.rosa-cluster-name) | grep DNS | awk '{print $2}'
+        rosa describe cluster --cluster=$(params.rosa-cluster-name) | grep DNS | awk '{print $2}' > $(workspaces.shared.path)/cluster-url.txt
+        while true ;
+        do
+          $(cat $(workspaces.shared.path)/command.txt) --insecure-skip-tls-verify
+          ret=$?
+          if [ $ret -eq 0 ] ; then
+            break
+          else
+            echo "\"$(params.rosa-cluster-name)\" Cluster-admin user is not ready."
+            echo "wait 10 seconds and retry..."
+            sleep 10
+          fi
+        done 
+    workspaces:
+    - name: aws-creds
+      workspace: aws-credentials-secret
+    - name: rosa-config
+      workspace: rosa-config-workspace
+    - name: shared
+      workspace: shared-workspace
+    - name: kubeconfig
+      workspace: kubeconfig-workspace
+    runAfter:
+    - check-cluster
+
+  - name: argocd-settings
+    taskRef:
+      name: aws-rosa-cli 
+    params:
+    - name: SCRIPT
+      value: |
+        DEST_ROSA_URL=$(cat $(workspaces.shared.path)/cluster-url.txt)
+        oc login $ROSA_API_URL:443 --username=$ROSA_USER --password=$ROSA_PASSWORD --insecure-skip-tls-verify
+        curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x /usr/local/bin/argocd
+        argocd login $ARGOCD_URL:443 --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
+        argocd cluster add default/$DEST_ROSA_URL:443/cluster-admin
+    workspaces:
+    - name: aws-creds
+      workspace: aws-credentials-secret
+    - name: rosa-config
+      workspace: rosa-config-workspace
+    - name: manifest
+      workspace: manifest-workspace
+    - name: shared
+      workspace: shared-workspace
+    - name: kubeconfig
+      workspace: kubeconfig-workspace
+    runAfter:
+    - create-cluster-admin
+
 #  - name: install-argocd
 #    taskRef:
 #      name: openshift-client

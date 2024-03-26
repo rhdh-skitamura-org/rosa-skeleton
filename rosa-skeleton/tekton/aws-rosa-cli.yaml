@@ -20,6 +20,8 @@ spec:
           name: oidc-config-id
       - secretRef:
           name: aws-credentials
+      - secretRef:
+          name: argocd-config
   params:
   - name: rosa-cluster-name
     description: The ROSA cluster name

@@ -1,0 +1,35 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: es-argocd-config
+spec:
+  secretStoreRef:
+    name: awssm
+    kind: ClusterSecretStore
+  target: # ExternalSecret から作成されるKubernetes Secretを指定する
+    name: argocd-config
+  data: # 取得する秘匿情報を指定する
+  - secretKey: ROSA_API_URL # 作成するSecretのkeyを指定
+    remoteRef:
+      key: argocd-config # AWS Secrets Managerに登録したシークレット名
+      property: ROSA_API_URL # シークレットに登録したキーを指定
+  - secretKey: ROSA_USER
+    remoteRef:
+      key: argocd-config
+      property: ROSA_USER
+  - secretKey: ROSA_PASSWORD
+    remoteRef:
+      key: argocd-config
+      property: ROSA_PASSWORD
+  - secretKey: ARGOCD_URL
+    remoteRef:
+      key: argocd-config
+      property: ARGOCD_URL
+  - secretKey: ARGOCD_USER
+    remoteRef:
+      key: argocd-config
+      property: ARGOCD_USER
+  - secretKey: ARGOCD_PASSWORD
+    remoteRef:
+      key: argocd-config
+      property: ARGOCD_PASSWORD

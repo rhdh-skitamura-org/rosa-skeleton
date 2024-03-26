@@ -122,7 +122,6 @@ spec:
         - node_max_replicas
         - node-machine-type
         - enable-autoscaling
-      title: Worker Node Settings
       type: object
       properties:
         node_min_replicas:

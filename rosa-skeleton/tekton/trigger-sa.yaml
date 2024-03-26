@@ -24,10 +24,18 @@ rules:
   - list
   - watch
 - apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+- apiGroups:
   - tekton.dev
   resources:
   - pipelineruns
-  - events
   verbs:
   - create
 - apiGroups:

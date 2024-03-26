@@ -11,7 +11,7 @@ spec:
     - name: git-url
       value: '${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
     - name: git-revision
-      value: 'main'
+      value: $(body.head_commit.id)
     - name: rosa-cluster-name
       value: '${{ values.cluster_name }}'
     - name: rosa-region

@@ -9,7 +9,7 @@ secrets:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: system:openshift:scc:anyuid
+  name: ${{ values.cluster_name }}-clusterrolebindings
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -17,4 +17,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: tekton-sa
-  namespace: rosa-create-test
+  namespace: ${{ values.cluster_name }}

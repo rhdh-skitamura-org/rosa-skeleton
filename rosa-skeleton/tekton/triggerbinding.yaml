@@ -1,0 +1,26 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: ${{ values.cluster_name }}-trigger-binding
+spec:
+  params:
+    - name: git-username
+      value: $(body.pusher.name)
+    - name: git-useremail
+      value: $(body.pusher.email)
+    - name: git-url
+      value: '${{ values.git-url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
+    - name: git-revision
+      value: 'main'
+    - name: rosa-cluster-name
+      value: '${{ values.cluster_name }}'
+    - name: rosa-region
+      value: '${{ values.aws_region }}'
+    - name: operator-role-prefix
+      value: '${{ values.cluster_name }}'
+    - name: rosa-version
+      value: '${{ values.rosa_version }}'
+    - name: rosa-machine-type
+      value: '${{ values.node_machine_type }}'
+    - name: enable-autoscaling
+      value: '${{ values.enable-autoscaling }}'

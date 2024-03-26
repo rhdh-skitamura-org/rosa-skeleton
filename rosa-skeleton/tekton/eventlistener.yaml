@@ -1,0 +1,22 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: ${{ values.cluster_name }}-listener
+spec:
+  serviceAccountName: trigger-sa 
+  triggers:
+    - bindings:
+        - ref: ${{ values.cluster_name }}-trigger-binding
+      template:
+        ref: ${{ values.cluster_name }}-pipeline-template
+      interceptors:
+      - ref:
+          name: github
+          kind: ClusterInterceptor
+        params:
+        - name: "secretRef"
+          value:
+            secretName: github-webhook-secret
+            secretKey: github_webhook_secret
+        - name: "eventTypes"
+          value: ["push"]

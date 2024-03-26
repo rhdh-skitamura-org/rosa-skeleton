@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.app_name }}.git 
+    repoURL: https://${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}.git 
     targetRevision: main
     path: ./tekton
   destination:

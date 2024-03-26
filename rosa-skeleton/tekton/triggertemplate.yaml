@@ -1,0 +1,64 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: ${{ values.cluster_name }}-pipeline-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: git-username
+    - name: git-useremail
+    - name: rosa-cluster-name
+    - name: rosa-region
+    - name: operator-role-prefix
+    - name: rosa-version
+    - name: rosa-machine-type
+    - name: enable-autoscaling
+
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: ${{ values.cluster_name }}-pipeline-run-
+      spec:
+        pipelineRef:
+          name: ${{ values.cluster_name }}-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: git-username
+            value: $(tt.params.git-username)
+          - name: git-useremail
+            value: $(tt.params.git-useremail)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: rosa-cluster-name
+            value: $(tt.params.rosa-cluster-name)
+          - name: rosa-region
+            value: $(tt.params.rosa-region)
+          - name: operator-role-prefix
+            value: $(tt.params.operator-role-prefix)
+          - name: rosa-version
+            value: $(tt.params.rosa-version)
+          - name: rosa-machine-type
+            value: $(tt.params.rosa-machine-type)
+          - name: enable-autoscaling
+            value: $(tt.params.enable-autoscaling)
+        workspaces:
+          - name: aws-credentials-secret
+            secret:
+              secretName: aws-credentials
+          - name: rosa-config-workspace
+            persistentVolumeClaim:
+              claimName: rosa-config-workspace
+          - name: shared-workspace
+            persistentVolumeClaim:
+              claimName: shared-workspace
+          - name: manifest-workspace
+            persistentVolumeClaim:
+              claimName: manifest-workspace
+          - name: basic-auth
+            secret:
+              secretName: github-basic-auth

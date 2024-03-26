@@ -13,9 +13,15 @@ resources:
   - terraform-cli.yaml
 # tekton pipelines
   - pipelines.yaml
+# tekton trigger
+  - el-route.yaml
+  - triggerbinding.yaml
+  - triggertemplate.yaml 
+  - eventlistener.yaml
 # pvcs
   - rosa-config-pvc.yaml
   - shared-workspace-pvc.yaml
   - manifest-workspace-pvc.yaml
 # SAs
   - tekton-sa.yaml
+  - trigger-sa.yaml

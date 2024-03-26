@@ -20,6 +20,7 @@ resources:
   - triggerbinding.yaml
   - triggertemplate.yaml 
   - eventlistener.yaml
+  - job-create-webhook.yaml
 # pvcs
   - rosa-config-pvc.yaml
   - shared-workspace-pvc.yaml

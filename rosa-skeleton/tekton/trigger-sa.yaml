@@ -37,7 +37,7 @@ rules:
   resources:
   - pipelineruns
   verbs:
-  - create
+  - "*"
 - apiGroups:
   - ""
   resources:

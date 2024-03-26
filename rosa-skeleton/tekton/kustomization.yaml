@@ -7,6 +7,8 @@ resources:
   - es-basic-auth-awssm.yaml
   - es-oidc-config-id.yaml
   - es-rosa-token.yaml
+  - es-webhook.yaml
+  - es-git-webhook-secret.yaml
 # tekton tasks
   - git-clone.yaml
   - aws-rosa-cli.yaml

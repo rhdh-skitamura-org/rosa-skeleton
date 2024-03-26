@@ -27,6 +27,7 @@ rules:
   - tekton.dev
   resources:
   - pipelineruns
+  - events
   verbs:
   - create
 - apiGroups:

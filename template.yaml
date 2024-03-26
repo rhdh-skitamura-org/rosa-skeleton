@@ -122,24 +122,27 @@ spec:
         - node_max_replicas
         - node-machine-type
         - enable-autoscaling
-      type: object
       properties:
-        node_min_replicas:
-          title: Node Min Replicas
-          type: number
-          default: 3
-        node_max_replicas:
-          title: Node Max Replicas
-          type: number
-          default: 3
-        node_machine_type:
-          title: Node Machine Type
-          type: string
-          default: "m5.xlarge"
-        enable_autoscaling:
-          title: Enable Autoscaling
-          type: boolean
-          default: "true"
+        node_settings:
+          title: Worker Node Settings
+          type: object
+          properties:
+            node_min_replicas:
+              title: Node Min Replicas
+              type: number
+              default: 3
+            node_max_replicas:
+              title: Node Max Replicas
+              type: number
+              default: 3
+            node_machine_type:
+              title: Node Machine Type
+              type: string
+              default: "m5.xlarge"
+            enable_autoscaling:
+              title: Enable Autoscaling
+              type: boolean
+              default: "true"
     
     #- title: Provide information about the EKS Node Group
     #  required:
@@ -212,10 +215,10 @@ spec:
           private_subnet_1: ${{ parameters.private_subnets.private_subnet_1 }}
           private_subnet_2: ${{ parameters.private_subnets.private_subnet_2 }}
           private_subnet_3: ${{ parameters.private_subnets.private_subnet_3 }}
-          node_max_replicas: ${{ parameters.node_max_replicas }}
-          node_min_replicas: ${{ parameters.node_min_replicas }}
-          node_machine_type: ${{ parameters.node_machine_type }}
-          enable_autoscaling: ${{ parameters.enable_autoscaling }}
+          node_max_replicas: ${{ parameters.node_settings.node_max_replicas }}
+          node_min_replicas: ${{ parameters.node_settings.node_min_replicas }}
+          node_machine_type: ${{ parameters.node_settings.node_machine_type }}
+          enable_autoscaling: ${{ parameters.node_settings.enable_autoscaling }}
           git: ${{ parameters.git }}
           git_host_url: ${{ parameters.git_host_url }}
           git_owner_name: ${{ parameters.git_owner_name }}

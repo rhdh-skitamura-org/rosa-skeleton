@@ -23,4 +23,4 @@ spec:
     - name: rosa-machine-type
       value: '${{ values.node_machine_type }}'
     - name: enable-autoscaling
-      value: '${{ values.enable-autoscaling }}'
+      value: '${{ values.enable_autoscaling }}'

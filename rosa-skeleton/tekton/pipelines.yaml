@@ -160,7 +160,6 @@ spec:
           --oidc-config-id $OIDC_CONFIG_ID \
           --region $(params.rosa-region) \
           --version $(params.rosa-version) \
-          --replicas 3 \
           --compute-machine-type $(params.rosa-machine-type) \
           --machine-cidr 10.0.0.0/16 \
           --service-cidr 172.30.0.0/16 \

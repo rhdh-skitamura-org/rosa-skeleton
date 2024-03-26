@@ -173,8 +173,8 @@ spec:
           --host-prefix 23 \
           --subnet-ids $SUBNET_IDS \
           --enable-autoscaling $(params.enable-autoscaling) \
-          --hosted-cp \
-          --dry-run
+          --hosted-cp
+          #--dry-run
         #else
         #  echo "ROSA Cluster \"$(params.rosa-cluster-name)\" already exists."
         #fi 

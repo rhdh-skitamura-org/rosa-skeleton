@@ -9,7 +9,7 @@ spec:
   params:
   - name: git-url
     #value: 'https://github.com/rhdh-skitamura-org/rosa-skeleton'
-    value: '${{ values.git-url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
+    value: '${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
   - name: git-revision
     value: 'main'
   - name: rosa-cluster-name

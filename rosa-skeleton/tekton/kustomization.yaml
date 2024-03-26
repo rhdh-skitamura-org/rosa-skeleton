@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+# external-secrets
+  - es-aws-creds.yaml
+  - es-basic-auth-awssm.yaml
+  - es-oidc-config-id.yaml
+  - es-rosa-token.yaml
+# tekton tasks
+  - git-clone.yaml
+  - aws-rosa-cli.yaml
+  - terraform-cli.yaml
+# tekton pipelines
+  - pipelines.yaml
+# pvcs
+  - rosa-config-pvc.yaml
+  - shared-workspace-pvc.yaml
+  - manifest-workspace-pvc.yaml
+# SAs
+  - tekton-sa.yaml

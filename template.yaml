@@ -1,0 +1,273 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-temporary-rosa-cluster
+  title: Create a Temporary ROSA cluster
+  description: Provides a ROSA Cluster.
+  tags:
+    - recommended
+    - terraform
+    - rosa
+spec:
+  owner: user:default/skitamura7446
+  type: service
+
+  parameters:
+    - title: Provide information about the new component
+      required:
+        - cluster_name
+        - owner
+        - system
+      properties:
+        cluster_name:
+          title: ROSA Cluster Name
+          type: string
+          default: "rosa-sample-001"
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+        system:
+          title: System
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - System
+
+    - title: Provide information about the EKS cluster
+      required:
+        - aws_region
+        - rosa_version
+        - vpc_cidr
+        - public_subnets
+        - private_subnets
+      properties:
+        aws_region:
+          title: AWS Region
+          type: string
+          default: "ap-northeast-1"
+          enum: 
+            - ap-northeast-1
+            - us-east-1
+          enumNames:
+            - ap-northeast-1
+            - us-east-1
+        rosa_version:
+          title: ROSA Cluster Version
+          type: string
+          default: "4.14.16"
+          enum:
+            - "4.15.2"
+            - "4.15.0"
+            - "4.14.16"
+            - "4.14.15"
+            - "4.14.14"
+            - "4.14.13"
+            - "4.14.12"
+          enumNames:
+            - "4.15.2"
+            - "4.15.0"
+            - "4.14.16"
+            - "4.14.15"
+            - "4.14.14"
+            - "4.14.13"
+            - "4.14.12"
+        vpc_cidr:
+          title: VPC CIDR
+          type: string
+          default: "10.0.0.0/16"
+        public_subnets:
+          title: Public Subnets
+          type: object
+          properties:
+            public_subnet_1:
+              title: "Public Subnet 1"
+              type: string
+              default: "10.0.1.0/24"
+            public_subnet_2:
+              title: "Public Subnet 2"
+              type: string
+              default: "10.0.2.0/24"
+            public_subnet_3:
+              title: "Public Subnet 3"
+              type: string
+              default: "10.0.3.0/24"
+        private_subnets:
+          title: Private Subnets
+          type: object
+          properties:
+            private_subnet_1:
+              title: "Private Subnet 1"
+              type: string
+              default: "10.0.4.0/24"
+            private_subnet_2:
+              title: "Private Subnet 2"
+              type: string
+              default: "10.0.5.0/24"
+            private_subnet_3:
+              title: "Private Subnet 3"
+              type: string
+              default: "10.0.6.0/24"
+    
+    - title: Provide information about the ROSA Worker Nodes
+      required:
+        - node_min_replicas
+        - node_max_replicas
+        - node-machine-type
+        - enable-autoscaling
+      title: Worker Node Settings
+      type: object
+      properties:
+        node_min_replicas:
+          title: Node Min Replicas
+          type: number
+          default: 3
+        node_max_replicas:
+          title: Node Max Replicas
+          type: number
+          default: 3
+        node_machine_type:
+          title: Node Machine Type
+          type: string
+          default: "m5.xlarge"
+        enable_autoscaling:
+          title: Enable Autoscaling
+          type: boolean
+          default: "true"
+    
+    #- title: Provide information about the EKS Node Group
+    #  required:
+    #    - iam_principal_type
+    #    - iam_principal_name
+    #  properties:
+    #    iam_principal_type:
+    #      title: IAM Principal Type to Grant Cluster Admin
+    #      type: string
+    #      default: user
+    #      enum:
+    #        - role
+    #        - user
+    #    iam_principal_name:
+    #      title: IAM Principal Name to Grant Cluster Admin
+    #      type: string
+    #      default: "eks-test-user"
+        
+    - title: Provide information about the git to used
+      required:
+        - git
+        - git_host_url
+        - git_owner_name
+      properties:
+        git:
+          title: Git of Destination
+          type: string
+          description: This action will store the application source code on the selected Git server
+          enum:
+            - github
+            #- gitlab
+          enumNames:
+            - GitHub
+            #- GitLab
+      dependencies:
+        git:
+          oneOf:
+            - properties:
+                git:
+                  enum:
+                    - github
+                git_host_url:
+                  title: Git Host URL
+                  type: string
+                  default: github.com
+                  description: Specify the GitHub or GitLab host URL(e.g., github.com)
+                git_owner_name:
+                  title: GitHub Organization Name or User Name
+                  type: string
+                  description: Specify the GitHub Organization or User to register the repository
+                  default: rhdh-skitamura-org
+  steps:
+    - id: terraform-template
+      name: Generating the Terraform Code Component
+      action: fetch:template
+      input:
+        url: ./rosa-skeleton
+        copyWithoutTemplating:
+          - .github/workflows/
+        values:
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          cluster_name: ${{ parameters.cluster_name }}
+          rosa_version: ${{ parameters.rosa_version }}
+          aws_region: ${{ parameters.aws_region }}
+          vpc_cidr: ${{ parameters.vpc_cidr }}
+          public_subnet_1: ${{ parameters.public_subnets.public_subnet_1 }}
+          public_subnet_2: ${{ parameters.public_subnets.public_subnet_2 }}
+          public_subnet_3: ${{ parameters.public_subnets.public_subnet_3 }}
+          private_subnet_1: ${{ parameters.private_subnets.private_subnet_1 }}
+          private_subnet_2: ${{ parameters.private_subnets.private_subnet_2 }}
+          private_subnet_3: ${{ parameters.private_subnets.private_subnet_3 }}
+          node_max_replicas: ${{ parameters.node_max_replicas }}
+          node_min_replicas: ${{ parameters.node_min_replicas }}
+          node_machine_type: ${{ parameters.node_machine_type }}
+          enable_autoscaling: ${{ parameters.enable_autoscaling }}
+          git: ${{ parameters.git }}
+          git_host_url: ${{ parameters.git_host_url }}
+          git_owner_name: ${{ parameters.git_owner_name }}
+        targetPath: ./tenant
+
+    #- id: github-actions-file
+    #  if: ${{ parameters.git == "github" }}
+    #  name: Get GitHub Actions Code
+    #  action: fetch:plain
+    #  input:
+    #    url: ./terraform-skeleton/.github 
+    #    targetPath: ./tenant-terraform/.github
+
+    - id: publish-to-github
+      if: ${{ parameters.git == "github" }}
+      name: Publish Terraform Repository to GitHub
+      action: publish:github
+      input:
+        repoUrl: ${{ parameters.git_host_url }}?owner=${{ parameters.git_owner_name }}&repo=${{ parameters.cluster_name }}
+        repoVisibility: public
+        sourcePath: ./tenant
+        defaultBranch: main
+        protectDefaultBranch: false
+        #repoVariables: 
+        #  AWS_DEFAULT_REGION: "${{ parameters.aws_region }}"
+        #  EKS_CLUSTER_NAME: "${{ parameters.cluster_name }}"
+         
+    - id: register-catalog-info-to-github
+      if: ${{ parameters.git == "github" }}
+      name: Registering the Catalog Info Component to GitHub
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish-to-github'].output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.cluster_name }}-bootstrap
+        argoInstance: main
+        namespace: openshift-gitops
+        repoUrl: https://${{ parameters.git_host_url }}/${{ parameters.git_owner_name }}/${{ parameters.cluster_name }}.git
+        path: 'argocd/'
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        if: ${{ parameters.git == "github" }}
+        url: ${{ steps['publish-to-github'].output.remoteUrl }}
+      - title: Open the Catalog Info Component
+        if: ${{ parameters.git == "github" }}
+        icon: catalog
+        entityRef: ${{ steps['register-catalog-info-to-github'].output.entityRef }}

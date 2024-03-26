@@ -59,7 +59,8 @@ spec:
       image: $(params.image)
       #workingDir: $(workspaces.source.path)/terraform
       workingDir: $(workspaces.source.path)/rosa-skeleton/terraform
-      command: ["/bin/sh", "-c"]
+      #command: ["/bin/sh", "-c"]
+      command: ['terraform']
       env:
         - name: "HTTP_PROXY"
           value: $(params.httpProxy)
@@ -76,7 +77,8 @@ spec:
       image: $(params.image)
       #workingDir: $(workspaces.source.path)/terraform 
       workingDir: $(workspaces.source.path)/rosa-skeleton/terraform 
-      command: ["/bin/sh", "-c"]
+      #command: ["/bin/sh", "-c"]
+      command: ['terraform']
       args:
         - $(params.ARGS)
       env:

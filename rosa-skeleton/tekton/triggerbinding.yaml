@@ -9,7 +9,7 @@ spec:
     - name: git-useremail
       value: $(body.pusher.email)
     - name: git-url
-      value: '${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
+      value: 'https://${{ values.git_host_url }}/${{ values.git_owner_name }}/${{ values.cluster_name }}'
     - name: git-revision
       value: $(body.head_commit.id)
     - name: rosa-cluster-name

@@ -1,21 +1,21 @@
 locals {
-  cluster_name = "rosa-test"
-  aws_region   = "ap-northeast-1"
+  cluster_name = "${{ values.cluster_name }}"
+  aws_region   = "${{ values.aws_region }}"
 
   vpc = {
     name = "${local.cluster_name}-vpc"
-    cidr = "10.0.0.0/16"
+    cidr = "${{ values.vpc_cidr }}"
 
     public_subnets = [
-      "10.0.1.0/24",
-      "10.0.2.0/24",
-      "10.0.3.0/24",
+      "${{ values.public_subnet_1 }}",
+      "${{ values.public_subnet_2 }}",
+      "${{ values.public_subnet_3 }}",
     ]
 
     private_subnets = [
-      "10.0.4.0/24",
-      "10.0.5.0/24",
-      "10.0.6.0/24",
+      "${{ values.private_subnet_1 }}",
+      "${{ values.private_subnet_2 }}",
+      "${{ values.private_subnet_3 }}",
     ]
 
     tags = {

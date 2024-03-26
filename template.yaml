@@ -139,7 +139,7 @@ spec:
             enable_autoscaling:
               title: Enable Autoscaling
               type: boolean
-              default: "true"
+              default: true
     
     #- title: Provide information about the EKS Node Group
     #  required:

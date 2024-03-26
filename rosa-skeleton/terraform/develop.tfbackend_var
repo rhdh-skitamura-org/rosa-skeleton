@@ -1,3 +1,0 @@
-bucket = "skitamura-terraform-tfstate"
-key    = "${{ values.cluster_name }}/terraform.tfstate"
-region = "ap-northeast-1"

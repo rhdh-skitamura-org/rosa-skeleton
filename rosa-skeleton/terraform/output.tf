@@ -13,7 +13,3 @@ output "azs" {
 output "aws_region" {
   value = local.aws_region
 }
-
-output "subnet_ids" {
-  value =  join(",", concat(module.vpc.public_subnets, module.vpc.private_subnets))
-}

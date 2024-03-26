@@ -64,6 +64,7 @@ spec:
   tasks:
   - name: git-clone
     taskRef:
+      kind: Task
       name: git-clone
     params:
     - name: url
@@ -78,6 +79,7 @@ spec:
 
   - name: create-vpc
     taskRef:
+      kind: Task
       name: terraform-cli
     workspaces:
     - name: source
@@ -127,6 +129,7 @@ spec:
 
   - name: rosa-init
     taskRef:
+      kind: Task
       name: aws-rosa-cli
     params:
     - name: rosa-cluster-name
@@ -150,6 +153,7 @@ spec:
 
   - name: create-cluster
     taskRef:
+      kind: Task
       name: aws-rosa-cli
     params: 
     - name: rosa-cluster-name
@@ -191,9 +195,12 @@ spec:
 
   - name: check-cluster
     taskRef:
+      kind: Task
       name: aws-rosa-cli
-    timeout: "1h30m"
+    timeout: "1h30m0s"
     params: 
+    - name: rosa-cluster-name
+      value: $(params.rosa-cluster-name)
     - name: SCRIPT
       value: |
         #/bin/bash
@@ -214,8 +221,11 @@ spec:
  
   - name: create-cluster-admin
     taskRef:
+      kind: Task
       name: aws-rosa-cli 
     params: 
+    - name: rosa-cluster-name
+      value: $(params.rosa-cluster-name)
     - name: SCRIPT
       value: |
         #/bin/bash
@@ -253,16 +263,19 @@ spec:
 
   - name: argocd-settings
     taskRef:
+      kind: Task
       name: aws-rosa-cli 
     params:
+    - name: rosa-cluster-name
+      value: $(params.rosa-cluster-name)
     - name: SCRIPT
       value: |
         DEST_ROSA_URL=$(cat $(workspaces.shared.path)/cluster-url.txt)
         oc login $ROSA_API_URL:443 --username=$ROSA_USER --password=$ROSA_PASSWORD --insecure-skip-tls-verify
         curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
         chmod +x /usr/local/bin/argocd
-        argocd login $ARGOCD_URL:443 --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
-        argocd cluster add default/$DEST_ROSA_URL:443/cluster-admin
+        argocd login $ARGOCD_URL --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
+        argocd cluster add default/$DEST_ROSA_URL:443/admin
     workspaces:
     - name: aws-creds
       workspace: aws-credentials-secret

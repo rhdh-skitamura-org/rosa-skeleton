@@ -28,10 +28,7 @@ rules:
   resources:
   - events
   verbs:
-  - create
-  - get
-  - list
-  - watch
+  - "*"
 - apiGroups:
   - tekton.dev
   resources:

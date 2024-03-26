@@ -1,0 +1,26 @@
+name: Trigger Tekton CI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  checks: write
+  contents: write
+
+jobs:
+  trigger-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+
+      - name: Commit and push if changed
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "actions-user"
+          git commit --allow-empty -m "Trigger Tekton CI" 
+          git push origin main
+

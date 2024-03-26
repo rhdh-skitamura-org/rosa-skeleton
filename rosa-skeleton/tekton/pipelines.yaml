@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: rosa-create-pipeline 
+  name: ${{ values.cluster_name }}-pipeline 
 spec:
   workspaces:
   - name: aws-credentials-secret

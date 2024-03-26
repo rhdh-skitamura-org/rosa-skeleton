@@ -32,8 +32,6 @@ spec:
             value: $(tt.params.git-username)
           - name: git-useremail
             value: $(tt.params.git-useremail)
-          - name: git-revision
-            value: $(tt.params.git-revision)
           - name: rosa-cluster-name
             value: $(tt.params.rosa-cluster-name)
           - name: rosa-region

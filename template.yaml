@@ -118,10 +118,7 @@ spec:
     
     - title: Provide information about the ROSA Worker Nodes
       required:
-        - node_min_replicas
-        - node_max_replicas
-        - node-machine-type
-        - enable-autoscaling
+        - node_settings
       properties:
         node_settings:
           title: Worker Node Settings

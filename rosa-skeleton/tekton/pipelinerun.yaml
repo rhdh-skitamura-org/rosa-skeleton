@@ -22,6 +22,8 @@ spec:
     value: '${{ values.rosa_version }}'
   - name: rosa-machine-type
     value: '${{ values.node_machine_type }}'
+  - name: enable-autoscaling
+    value: '${{ values.enable-autoscaling }}'
 #  - name: rosa-cidr
 #    value: '10.0.0.0/16'
 #  - name: ARGS

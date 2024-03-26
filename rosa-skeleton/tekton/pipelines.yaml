@@ -24,6 +24,8 @@ spec:
     type: string
   - name: rosa-machine-type
     type: string
+  - name: enable-autoscaling
+    type: string
 #  - name: oidc-config-id
 #    type: string
 #  - name: rosa-cidr
@@ -165,6 +167,7 @@ spec:
           --pod-cidr 10.128.0.0/14 \
           --host-prefix 23 \
           --subnet-ids $SUBNET_IDS \
+          --enable-autoscaling $(params.enable-autoscaling) \
           --hosted-cp \
           --dry-run
         #else

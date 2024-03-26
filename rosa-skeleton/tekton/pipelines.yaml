@@ -22,9 +22,9 @@ spec:
     type: string
   - name: rosa-version
     type: string
-  - name: node_min_replicas 
+  - name: node-min-replicas 
     type: string
-  - name: node_max_replicas
+  - name: node-max-replicas
     type: string
   - name: rosa-machine-type
     type: string

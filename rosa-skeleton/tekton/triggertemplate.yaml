@@ -66,3 +66,6 @@ spec:
           - name: basic-auth
             secret:
               secretName: github-basic-auth
+          - name: kubeconfig-workspace
+            persistentVolumeClaim:
+              claimName: kubeconfig-workspace

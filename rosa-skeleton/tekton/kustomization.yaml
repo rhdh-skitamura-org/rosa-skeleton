@@ -28,6 +28,7 @@ resources:
   - rosa-config-pvc.yaml
   - shared-workspace-pvc.yaml
   - manifest-workspace-pvc.yaml
+  - kubeconfig-workspace-pvc.yaml
 # SAs
   - tekton-sa.yaml
   - trigger-sa.yaml

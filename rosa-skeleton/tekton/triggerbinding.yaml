@@ -20,6 +20,10 @@ spec:
       value: '${{ values.cluster_name }}'
     - name: rosa-version
       value: '${{ values.rosa_version }}'
+    - name: node_min_replicas
+      value: '${{ values.node_min_replicas }}'
+    - name: node_max_replicas
+      value: '${{ values.node_max_replicas }}'
     - name: rosa-machine-type
       value: '${{ values.node_machine_type }}'
     - name: enable-autoscaling

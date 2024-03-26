@@ -12,6 +12,8 @@ spec:
     - name: rosa-region
     - name: operator-role-prefix
     - name: rosa-version
+    - name: node_min_replicas
+    - name: node_max_replicas
     - name: rosa-machine-type
     - name: enable-autoscaling
 
@@ -40,6 +42,10 @@ spec:
             value: $(tt.params.operator-role-prefix)
           - name: rosa-version
             value: $(tt.params.rosa-version)
+          - name: node_min_replicas
+            value: $(tt.params.node_min_replicas)
+          - name: node_max_replicas
+            value: $(tt.params.node_max_replicas)
           - name: rosa-machine-type
             value: $(tt.params.rosa-machine-type)
           - name: enable-autoscaling

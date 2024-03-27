@@ -141,6 +141,18 @@ spec:
               type: boolean
               default: true
     
+    - title: Provide information about ROSA User
+      required:
+        - rosa_username
+        - rosa_password
+      properties:
+        rosa_username:
+          title: ROSA User Name
+          type: string
+        rosa_password:
+          title: ROSA User Password
+          type: string
+          ui:field: Secret
     #- title: Provide information about the EKS Node Group
     #  required:
     #    - iam_principal_type
@@ -239,9 +251,18 @@ spec:
         sourcePath: ./tenant
         defaultBranch: main
         protectDefaultBranch: false
-        #repoVariables: 
-        #  AWS_DEFAULT_REGION: "${{ parameters.aws_region }}"
-        #  EKS_CLUSTER_NAME: "${{ parameters.cluster_name }}"
+        secrets: 
+          ROSA_USERNAME: "${{ parameters.rosa_username }}"
+          ROSA_PASSWORD: "${{ secrets.rosa_secret }}"
+
+    - id: dispatch-workflow
+      if: ${{ parameters.git == "github" }}
+      name: Dispatch Workflow
+      action: github:actions:dispatch
+      input:
+        repoUrl: ${{ parameters.git_host_url }}?owner=${{ parameters.git_owner_name }}&repo=${{ parameters.cluster_name }}
+        workflowId: register-rosa-password-to-awssm.yaml 
+        branchOrTagName: main
          
     - id: register-catalog-info-to-github
       if: ${{ parameters.git == "github" }}
@@ -250,6 +271,12 @@ spec:
       input:
         repoContentsUrl: ${{ steps['publish-to-github'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
+
+    - id: wait
+      name: Wait
+      action: debug:wait
+      input:
+        seconds: 60
 
     - id: create-argocd-resources
       name: Create ArgoCD Resources

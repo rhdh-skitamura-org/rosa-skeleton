@@ -296,6 +296,31 @@ spec:
     runAfter:
     - create-cluster-admin
 
+  - name: register-rosa-htpasswd
+    taskRef:
+      kind: Task
+      name: aws-rosa-cli
+    params:
+    - name: rosa-cluster-name
+      value: $(params.rosa-cluster-name)
+    - name: SCRIPT
+      value: |
+        rosa login --token $ROSA_TOKEN
+        rosa create idp --type htpasswd --users $ROSA_USERNAME:$ROSA_PASSWORD --cluster=$(params.rosa-cluster-name) 
+    workspaces:
+    - name: aws-creds
+      workspace: aws-credentials-secret
+    - name: rosa-config
+      workspace: rosa-config-workspace
+    - name: manifest
+      workspace: manifest-workspace
+    - name: shared
+      workspace: shared-workspace
+    - name: kubeconfig
+      workspace: kubeconfig-workspace
+    runAfter:
+    - argocd-settings
+
 #  - name: install-argocd
 #    taskRef:
 #      name: openshift-client

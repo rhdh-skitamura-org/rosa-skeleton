@@ -22,6 +22,8 @@ spec:
           name: aws-credentials
       - secretRef:
           name: argocd-config
+      - secretRef:
+          name: rosa_password
   params:
   - name: rosa-cluster-name
     description: The ROSA cluster name

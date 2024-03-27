@@ -10,6 +10,7 @@ resources:
   - es-webhook.yaml
   - es-git-webhook-secret.yaml
   - es-argocd-config.yaml
+  - es-rosa-password.yaml
 # tekton tasks
   - git-clone.yaml
   - aws-rosa-cli.yaml
@@ -32,3 +33,4 @@ resources:
 # SAs
   - tekton-sa.yaml
   - trigger-sa.yaml
+  - cluster-admin-crb.yaml

@@ -7,6 +7,8 @@ RUN yum update -y \
     && tar xvf rosa-linux.tar.gz \
     && tar xvf openshift-client-linux.tar.gz \
     && mv rosa /usr/local/bin/rosa \
-    && mv oc /usr/local/bin/oc
+    && mv oc /usr/local/bin/oc \
+    && mv kubectl /usr/local/bin/kubectl
+ENV KUBECONFIG=/root/.kube/config
 
 ENTRYPOINT [""]

@@ -5,6 +5,13 @@ metadata:
   {%- if values.description %}
   description: ${{ values.description }}
   {%- endif %}
+  links:
+  - url: https://openshift-gitops-server-openshift-gitops.${{ values.cluster_url }}/applications/openshift-gitops/${{ values.cluster_name }}
+    title: ArgoCD
+    icon: dashboard
+  - url: https://console-openshift-console.___rosa_url___/dashboards 
+    title: ROSA Console
+    icon: dashboard
   annotations:
     argocd/app-name: ${{ values.cluster_name }}
     backstage.io/kubernetes-id: ${{ values.cluster_name }}

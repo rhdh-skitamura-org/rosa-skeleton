@@ -161,6 +161,7 @@ spec:
     - name: SCRIPT 
       value: |
         #/bin/bash
+        rosa login --token $ROSA_TOKEN
         if [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) ) ]] ; then
         SUBNET_IDS=$(cat $(workspaces.shared.path)/subnet_ids)
         rosa create cluster --cluster-name $(params.rosa-cluster-name) --sts \
@@ -204,6 +205,7 @@ spec:
     - name: SCRIPT
       value: |
         #/bin/bash
+        rosa login --token $ROSA_TOKEN
         while [[ ! $(rosa list cluster | grep $(params.rosa-cluster-name) | grep "ready") ]] ;
         do
           echo "ROSA Cluster \"$(params.rosa-cluster-name)\" is not ready."
@@ -216,6 +218,8 @@ spec:
       workspace: aws-credentials-secret
     - name: rosa-config
       workspace: rosa-config-workspace
+    - name: kubeconfig
+      workspace: kubeconfig-workspace
     runAfter:
     - create-cluster
  
@@ -229,6 +233,7 @@ spec:
     - name: SCRIPT
       value: |
         #/bin/bash
+        rosa login --token $ROSA_TOKEN
         set +e
         rosa create admin --cluster=$(params.rosa-cluster-name) > $(workspaces.shared.path)/stdout.txt
         if [[ $(cat $(workspaces.shared.path)/stdout.txt | grep "oc login") ]] ; then
@@ -270,12 +275,14 @@ spec:
       value: $(params.rosa-cluster-name)
     - name: SCRIPT
       value: |
+        rosa login --token $ROSA_TOKEN
         DEST_ROSA_URL=$(cat $(workspaces.shared.path)/cluster-url.txt)
         oc login $ROSA_API_URL:443 --username=$ROSA_USER --password=$ROSA_PASSWORD --insecure-skip-tls-verify
         curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
         chmod +x /usr/local/bin/argocd
+        rm -rf /root/.config/argocd
         argocd login $ARGOCD_URL --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
-        argocd cluster add default/$DEST_ROSA_URL:443/admin
+        argocd cluster add default/api-$DEST_ROSA_URL:443/cluster-admin
     workspaces:
     - name: aws-creds
       workspace: aws-credentials-secret

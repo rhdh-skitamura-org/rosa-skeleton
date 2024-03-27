@@ -209,8 +209,8 @@ spec:
       action: fetch:template
       input:
         url: ./rosa-skeleton
-        #copyWithoutTemplating:
-        #  - .github/workflows/
+        copyWithoutTemplating:
+          - .github/workflows/
         values:
           owner: ${{ parameters.owner }}
           system: ${{ parameters.system }}
@@ -233,13 +233,13 @@ spec:
           git_owner_name: ${{ parameters.git_owner_name }}
         targetPath: ./tenant
 
-    #- id: github-actions-file
-    #  if: ${{ parameters.git == "github" }}
-    #  name: Get GitHub Actions Code
-    #  action: fetch:plain
-    #  input:
-    #    url: ./terraform-skeleton/.github 
-    #    targetPath: ./tenant-terraform/.github
+    - id: github-actions-file
+      if: ${{ parameters.git == "github" }}
+      name: Get GitHub Actions Code
+      action: fetch:plain
+      input:
+        url: ./rosa-skeleton/.github 
+        targetPath: ./tenant/.github
 
     - id: publish-to-github
       if: ${{ parameters.git == "github" }}

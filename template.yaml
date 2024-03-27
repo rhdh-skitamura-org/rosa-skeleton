@@ -261,7 +261,7 @@ spec:
       action: github:actions:dispatch
       input:
         repoUrl: ${{ parameters.git_host_url }}?owner=${{ parameters.git_owner_name }}&repo=${{ parameters.cluster_name }}
-        workflowId: register-rosa-password-to-awssm.yaml 
+        workflowId: register-rosa-password-to-awssm.yaml
         branchOrTagName: main
          
     - id: register-catalog-info-to-github

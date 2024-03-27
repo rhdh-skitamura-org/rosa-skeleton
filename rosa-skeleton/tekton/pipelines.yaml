@@ -239,8 +239,7 @@ spec:
         if [[ $(cat $(workspaces.shared.path)/stdout.txt | grep "oc login") ]] ; then
           cat $(workspaces.shared.path)/stdout.txt | grep "oc login" > $(workspaces.shared.path)/command.txt
         fi
-        cat $(workspaces.shared.path)/command.txt
-        rosa describe cluster --cluster=$(params.rosa-cluster-name) | grep DNS | awk '{print $2}'
+        #cat $(workspaces.shared.path)/command.txt
         rosa describe cluster --cluster=$(params.rosa-cluster-name) | grep DNS | awk '{print $2}' > $(workspaces.shared.path)/cluster-url.txt
         while true ;
         do
@@ -276,7 +275,7 @@ spec:
     - name: SCRIPT
       value: |
         rosa login --token $ROSA_TOKEN
-        DEST_ROSA_URL=$(cat $(workspaces.shared.path)/cluster-url.txt)
+        DEST_ROSA_URL=$(cat $(workspaces.shared.path)/cluster-url.txt | sed 's/\./-/g')
         oc login $ROSA_API_URL:443 --username=$ROSA_USER --password=$ROSA_PASSWORD --insecure-skip-tls-verify
         curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
         chmod +x /usr/local/bin/argocd

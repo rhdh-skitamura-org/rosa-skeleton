@@ -255,6 +255,12 @@ spec:
           ROSA_USERNAME: "${{ parameters.rosa_username }}"
           ROSA_PASSWORD: "${{ secrets.rosa_secret }}"
 
+    - id: wait
+      name: Wait
+      action: debug:wait
+      input:
+        seconds: 10
+
     - id: dispatch-workflow
       if: ${{ parameters.git == "github" }}
       name: Dispatch Workflow

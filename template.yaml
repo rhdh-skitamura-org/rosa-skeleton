@@ -252,14 +252,15 @@ spec:
         defaultBranch: main
         protectDefaultBranch: false
         secrets: 
+          ROSA_CLUSTER_NAME: "${{ parameters.cluster_name }}"
           ROSA_USERNAME: "${{ parameters.rosa_username }}"
-          ROSA_PASSWORD: "${{ secrets.rosa_secret }}"
+          ROSA_PASSWORD: "${{ secrets.rosa_password }}"
 
     - id: wait
       name: Wait
       action: debug:wait
       input:
-        seconds: 10
+        seconds: 5
 
     - id: dispatch-workflow
       if: ${{ parameters.git == "github" }}
@@ -282,7 +283,7 @@ spec:
       name: Wait
       action: debug:wait
       input:
-        seconds: 60
+        seconds: 30
 
     - id: create-argocd-resources
       name: Create ArgoCD Resources
